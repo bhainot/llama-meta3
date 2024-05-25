@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Interface</title>
+    <title>Meta Llama Chatbot</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -94,9 +94,8 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
     <script>
-        const apiEndpoint = window.API_ENDPOINT;
+        const apiEndpoint = "{{ api_endpoint }}";
         async function sendMessage() {
             const inputText = document.getElementById('inputText').value;
             if (!inputText.trim()) return;
