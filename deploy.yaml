@@ -15,7 +15,7 @@ services:
         python3 -m vllm.entrypoints.openai.api_server --model
         meta-llama/Meta-Llama-3-70B-Instruct --tensor-parallel-size 2 --gpu-memory-utilization 0.99
     env:
-      - "HF_TOKEN=hf_<your_token>"
+      - "HF_TOKEN=hf_your_token"
     params:
       storage:
         shm:
@@ -26,12 +26,12 @@ services:
   web:
     image: ntbhai/web-server:0.1
     expose:
-      - port: 80
-        as: 80
+      - port: 5000
+        as: 5000
         to:
           - global: true
     env:
-      - API_ENDPOINT=http://<API_WEB_SERVER_IP>:80
+      - API_ENDPOINT=http://<API_SERVER_IP>:80
 
 profiles:
   compute:
