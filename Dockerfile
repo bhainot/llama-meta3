@@ -1,7 +1,12 @@
-FROM nginx:alpine
+FROM python:3.9
 
-COPY index.html /usr/share/nginx/html/index.html
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+ENV PYTHONUNBUFFERED=1
 
-ENTRYPOINT ["/entrypoint.sh"]
+WORKDIR /app
+
+COPY llama.py ./
+COPY index.html templates/
+
+RUN pip install --no-cache-dir flask
+
+CMD ["python", "llama.py"]
