@@ -6,7 +6,7 @@
 - Click on "Deploy"
 - select "Build Your Template".
 - Switch to the YAML  editor
-- paste the deployment file from https://gist.github.com/zJuuu/73930a7baab0beaafcd3e633f6202cda.
+- paste the deployment file from [https://gist.github.com/zJuuu/73930a7baab0beaafcd3e633f6202cda](https://github.com/bhainot/llama-meta3/blob/main/deploy.yaml).
 - You can remove the API AUTHORISATION in the yaml file.
 - In the deployment file, set your Huggingface access token as an  environment variable
 - This will allow you to access the Llama 3 models.
