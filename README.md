@@ -20,5 +20,9 @@
 - This indicates that the deployment  has successfully started.
 - You can now access your Llama 3 70B endpoint  by clicking on "Forwarded Port" on the "Leases" tab.
 - As this is an OpenAI Server without GUI we need to interact with the model via api requests or build a basic html to interact with it.
-- 
+
+
+# Working Of the Deployment 
+Link to the video of the [deployment](https://share.vidyard.com/watch/EqBY85CpzNbNFu6X9aSqSL?).
+
 
