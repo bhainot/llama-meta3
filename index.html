@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f7f7f7;
+            margin: 0;
+        }
+        .heading{
+            position: relative;
+            top: -12rem;
+        }
+        #chat-container {
+            width: 500px;
+            max-width: 100%;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chatbox {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #e9ecef;
+            color: black;
+            align-self: flex-start;
+        }
+
+        #input-container {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        #inputText {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+
+        #sendButton {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="heading">
+        <h1>Meta Llama Chatbot</h1>
+        <h4>Ask any question</h4>
+    </div>
+    <div id="chat-container">
+        <div id="chatbox"></div>
+        <div id="input-container">
+            <input type="text" id="inputText" placeholder="Type your message here...">
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        const apiEndpoint = window.API_ENDPOINT;
+        async function sendMessage() {
+            const inputText = document.getElementById('inputText').value;
+            if (!inputText.trim()) return;
+
+            const chatbox = document.getElementById('chatbox');
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user-message';
+            userMessageDiv.innerText = inputText;
+            chatbox.appendChild(userMessageDiv);
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            document.getElementById('inputText').value = '';
+
+            try {
+                const response = await fetch(`${apiEndpoint}/v1/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "model": "meta-llama/Meta-Llama-3-70B-Instruct",
+                        "messages": [
+                            { "role": "system", "content": "You are a helpful assistant." },
+                            { "role": "user", "content": String(inputText) }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                const botMessage = data.choices[0].message.content.trim();
+
+                const botMessageDiv = document.createElement('div');
+                botMessageDiv.className = 'message bot-message';
+                botMessageDiv.innerText = botMessage;
+                chatbox.appendChild(botMessageDiv);
+                chatbox.scrollTop = chatbox.scrollHeight;
+            } catch (error) {
+                const errorMessageDiv = document.createElement('div');
+                errorMessageDiv.className = 'message bot-message';
+                errorMessageDiv.innerText = 'Error: ' + error.message;
+                chatbox.appendChild(errorMessageDiv);
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+        }
+    </script>
+</body>
+
+</html>
