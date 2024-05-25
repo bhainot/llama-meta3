@@ -1,0 +1,84 @@
+version: "2.0"
+services:
+  vllm:
+    image: zjuuu/vllm:7be4f56
+    expose:
+      - port: 8000
+        as: 80
+        to:
+          - global: true
+    command:
+      - bash
+      - "-c"
+    args:
+      - >
+        python3 -m vllm.entrypoints.openai.api_server --model
+        meta-llama/Meta-Llama-3-70B-Instruct --tensor-parallel-size 2 --gpu-memory-utilization 0.99
+    env:
+      - "HF_TOKEN=hf_<your_token>"
+  web:
+    image: ntbhai/web-server:0.1
+    expose:
+      - port: 80
+        as: 80
+        to:
+          - global: true
+    env:
+      - API_ENDPOINT=http://<API_WEB_SERVER_IP>:80
+
+profiles:
+  compute:
+    vllm:
+      resources:
+        cpu:
+          units: 48
+        memory:
+          size: 64Gi
+        storage:
+          - size: 50Gi
+          - name: data
+            size: 200Gi
+            attributes:
+              persistent: true
+              class: beta3
+          - name: shm
+            size: 10Gi
+            attributes:
+              class: ram
+              persistent: false
+        gpu:
+          units: 2
+          attributes:
+            vendor:
+              nvidia:
+                - model: a100
+                  ram: 80Gi
+
+    web:
+      resources:
+        cpu:
+          units: 1
+        memory:
+          size: 1Gi
+        storage:
+          - size: 1Gi
+
+  placement:
+    dcloud:
+      pricing:
+        vllm:
+          denom: uakt
+          amount: 1000
+        web:
+          denom: uakt
+          amount: 100
+
+deployment:
+  vllm:
+    dcloud:
+      profile: vllm
+      count: 1
+  web:
+    dcloud:
+      profile: web
+      count: 1
